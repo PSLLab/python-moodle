@@ -5,7 +5,8 @@
 #    Copyright (c) 2011 Zikzakmedia S.L. (http://zikzakmedia.com) All Rights Reserved.
 #                       Raimon Esteve <resteve@zikzakmedia.com>
 #                       Jesus Martín <jmartin@zikzakmedia.com>
-#    $Id$
+#    Copyright (c) 2013 Alain Fréhel <alain.frehel@univ-paris3.fr>
+#    Copyright (c) 2013 Francisco Moreno <packo@assamita.net>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as
@@ -26,7 +27,7 @@ class MDL:
     """ 
     Main class to connect Moodle webservice
     More information about Webservice:
-        http://docs.moodle.org/20/en/Web_Services_API
+        http://docs.moodle.org/dev/Web_Services_API
         http://docs.moodle.org/dev/Web_services
         http://docs.moodle.org/dev/Creating_a_web_service_client
         http://docs.moodle.org/dev/Web_services_Roadmap#Web_service_functions
@@ -56,7 +57,7 @@ class MDL:
         data = 'wstoken=%s&wsfunction=%s' % (server['token'], function)
 
         import urllib2
-        from xml.dom.minidom import parse, parseString
+        
         request = urllib2.Request(url, data)
         f = urllib2.urlopen(request)
         result = f.read()
@@ -82,7 +83,6 @@ class MDL:
                 function += '&%s[%s]=' % (key_word, str(count))
                 function += '%s' % param
             count += 1
-
         return self.conn_rest(server, function)
 
 
@@ -112,40 +112,49 @@ class MDL:
         Select the correct function to call
         """
 
-        def moodle_course_get_courses(params):
-            return proxy.moodle_course_get_courses()
-        
-        def moodle_course_create_courses(params):
-            return proxy.moodle_course_create_courses(params)
-            
-        def moodle_user_get_users_by_id(params):
-            return proxy.moodle_user_get_users_by_id(params)
+        def core_course_get_courses(params):
+            return proxy.core_course_get_courses()
 
-        def moodle_user_create_users(params):
-            return proxy.moodle_user_create_users(params)
-            
-        def moodle_user_update_users(params):
-            return proxy.moodle_user_update_users(params)
-            
-        def moodle_enrol_manual_enrol_users(params):
-            return proxy.moodle_enrol_manual_enrol_users(params)
-            
+        def core_course_create_courses(params):
+            return proxy.core_course_create_courses(params)
+        
+        def core_user_get_users(params):
+            return proxy.core_user_get_users(params)
+        
+        def core_user_create_users(params):
+            return proxy.core_user_create_users(params)
+        
+        def core_user_update_users(params):
+            return proxy.core_user_update_users(params)
+        
+        def core_user_delete_users(params):
+            return proxy.core_user_delete_users(params)
+        
+        def enrol_manual_enrol_users(params):
+            return proxy.enrol_manual_enrol_users(params)
+        
+        # def enrol_manual_unenrol_users(params):
+        #     return proxy.enrol_manual_unenrol_users(params)
+        
         def not_implemented_yet(params):
             return False
 
         proxy = self.conn_xmlrpc(server)
         select_method = {
-            "moodle_course_get_courses": moodle_course_get_courses,
-            "moodle_course_create_courses": moodle_course_create_courses,
-            "moodle_user_get_users_by_id": moodle_user_get_users_by_id,
-            "moodle_user_create_users": moodle_user_create_users,
-            "moodle_user_update_users": moodle_user_update_users,
-            "moodle_enrol_manual_enrol_users": moodle_enrol_manual_enrol_users,
+            "core_course_get_courses": core_course_get_courses,
+            "core_course_create_courses": core_course_create_courses,
+            "core_user_get_users": core_user_get_users,
+            "core_user_create_users": core_user_create_users,
+            "core_user_update_users": core_user_update_users,
+            "core_user_delete_users": core_user_delete_users,
+            "enrol_manual_enrol_users": enrol_manual_enrol_users,
+            # "enrol_manual_unenrol_users": enrol_manual_unenrol_users,
             "not_implemented_yet": not_implemented_yet,
         }
 
         if function is None or function not in select_method:
             function = "not_implemented_yet"
+        
         return select_method[function](params)
 
 
@@ -165,8 +174,8 @@ class MDL:
         if 'protocol' not in server:
             return False
         params=''
-        function = 'moodle_course_get_courses'
-        key_word = ''
+        function = 'core_course_get_courses'
+        #key_word = ''
         protocol = {
             "xmlrpc": self.xmlrpc_protocol,
             "rest": self.rest_protocol,
@@ -194,7 +203,7 @@ class MDL:
         """
         if 'protocol' not in server:
             return False
-        function = 'moodle_course_create_courses'
+        function = 'core_course_create_courses'
         key_word = 'courses'
         protocol = {
             "xmlrpc": self.xmlrpc_protocol,
@@ -205,7 +214,7 @@ class MDL:
 
     def get_users(self, server, params):
         """
-        Get users by id
+        Get users 
         Input:
             server = {
                 'protocol': 'xmlrpc|rest',
@@ -213,24 +222,23 @@ class MDL:
                 'token': 'mytokenkey',
             }
             params = [{                    # Input a list of dictionaries
-                'shortname': 'test4',      # Required & unique
-                'fullname': 'test4',       # Required
-                'categoryid': 1,           # Required
+                'key' : key_name (fullname,username,email....)
+                'value': value to search
             }]
         Output:
             xmlrpc protocol:    list of dictionaries
             rest protocol:      xml file format
-        params = ((1,2,3,4,5,...))     # Input a tuple of tuple
+        params example:   # criteria = [{'key':'username','value':'api_user'}] 
+                          # mdl.get_users(server,criteria)
         """
         if 'protocol' not in server:
             return False
-        function = 'moodle_user_get_users_by_id'
-        key_word = 'userids'
+        function = 'core_user_get_users'
         protocol = {
             "xmlrpc": self.xmlrpc_protocol,
             "rest": self.rest_protocol,
         }
-        return protocol[server['protocol']](server, params, function, key_word)
+        return protocol[server['protocol']](server, params, function)
 
 
     def create_users(self, server, params):
@@ -255,7 +263,7 @@ class MDL:
         """
         if 'protocol' not in server:
             return False
-        function = 'moodle_user_create_users'
+        function = 'core_user_create_users'
         key_word = 'users'
         protocol = {
             "xmlrpc": self.xmlrpc_protocol,
@@ -266,7 +274,7 @@ class MDL:
 
     def update_users(self, server, params):
         """
-        Create new user
+        Update the users information
         Input:
             server = {
                 'protocol': 'xmlrpc|rest',
@@ -283,8 +291,35 @@ class MDL:
         """
         if 'protocol' not in server:
             return False
-        function = 'moodle_user_update_users'
+        function = 'core_user_update_users'
         key_word = 'users'
+        protocol = {
+            "xmlrpc": self.xmlrpc_protocol,
+            "rest": self.rest_protocol,
+        }
+        return protocol[server['protocol']](server, params, function, key_word)
+
+
+    def delete_users(self, server, params):
+        """
+        Delete a list of users.
+        Input:
+            server = {
+                'protocol': 'xmlrpc|rest',
+                'uri': 'http://www.mymoodle.org',
+                'token': 'mytokenkey',
+            }
+            params = [                     # Input a list of int
+                2, 3, 4
+            ]
+        Output:
+            xmlrpc protocol:    None
+            rest protocol:      None
+        """
+        if 'protocol' not in server:
+            return False
+        function = 'core_user_delete_users'
+        key_word = 'userids'
         protocol = {
             "xmlrpc": self.xmlrpc_protocol,
             "rest": self.rest_protocol,
@@ -294,7 +329,7 @@ class MDL:
 
     def enrol_users(self, server, params):
         """
-        Create new user
+       enrol/unenrol users to a course with a role
         Input:
             server = {
                 'protocol': 'xmlrpc|rest',
@@ -305,6 +340,7 @@ class MDL:
             'roleid': 1,
             'userid': 5,
             'courseid': 3,
+            'suspend' : 1,              # to unrol de user
         }]
         Output:
             xmlrpc protocol:    None
@@ -312,7 +348,7 @@ class MDL:
         """
         if 'protocol' not in server:
             return False
-        function = 'moodle_enrol_manual_enrol_users'
+        function = 'enrol_manual_enrol_users'
         key_word = 'enrolments'
         protocol = {
             "xmlrpc": self.xmlrpc_protocol,

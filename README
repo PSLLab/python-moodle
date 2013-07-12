@@ -1,44 +1,19 @@
 Moodle - Webservice Moodle in Python
-=========================================================================================
+================================================================================
 Webservice functions to Moodle
 
 Installation
-------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 Installing Moodle Webservice is fairly easy. You can...
 
     sudo python setup.py install  
     
-Setting up Moodle 2.0.x web services
-------------------------------------------------------------------------------------------
-1. Enable web services
-   - Site administration => Plugins => Web services => Overview => Enable web services
-
-2. Enable REST or XML-RPC protocol
-   - Site administration => Plugins => Web services => Overview => Enable protocols
-
-3. Create web services user with Admin rights (for web services authentication)
-   - Site administration => Plugins => Web services => Overview => Create a specific user	
-
-4. Set permissions
-   - Site administration => Plugins => Web services => Overview => Check user capability
-
-5. Add a service
-   - Site administration => Plugins => Web services => Overview => Select a service
-   - => add (eg. moodle/user:wiewalldetails: View user full information)
-
-6. Add functions you want access to
-   - Site administration => Plugins => Web services => Overview => Select a service
-   - => Functions => Add functions (eg. moodle_user_create_users, moodle_user_create_users)
-
-7. Allow web services user access to web service
-   - Site administration => Plugins => Web services => Overview => Select a service
-   - => Authorised users
-
-8. Create security token
-   - Site administration => Plugins => Web services => Overview => Create a token for a user
+Setting up Moodle 2.2.x web services
+--------------------------------------------------------------------------------
+Follow the steps in /admin/settings.php?section=webservicesoverview of your moodle.
 
 Example Use
------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 Create a new course:
 
     from moodle import MDL
@@ -89,7 +64,8 @@ The implemented methods and APIs are:
     * get_courses(server)
     * create_users(server, users)
     * update_users(server, users)
+    * delete_users(server, users)
     * get_users(server, user_ids)
-    * enrol_users(server, enrols)
-
+    * enrol_users(server, enrols) (include unrol users)
+ 
 For more examples, see examples dir

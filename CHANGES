@@ -15,3 +15,8 @@ Version 0.0.1
     * get_users(server, user_ids)
     * enrol_users(server, enrols)
 * update courses webservice available Moodle version 2.2. TODO
+
+Version 0.0.2
+-------------
+
+* Updated courses services to 2.5
