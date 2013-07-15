@@ -23,9 +23,9 @@
 ##############################################################################
 
 from config import *
-from moodle import MDL
+from moodle_ws_client import moodle
 
-mdl = MDL()
+mdl = moodle.MDL()
 # xmlrpc Connection
 
 """

@@ -25,6 +25,6 @@
 '''
 Moodle web service connection library
 '''
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 
-from moodle import *
+from moodle_ws_client import *

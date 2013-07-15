@@ -16,8 +16,8 @@ Example Use
 --------------------------------------------------------------------------------
 Create a new course:
 
-    from moodle import MDL
-    mdl = MDL()
+    from moodle_ws_client import moodle
+    mdl = moodle.MDL()
 
     # Connect to moodle data
     server = {
