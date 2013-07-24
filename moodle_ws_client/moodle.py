@@ -47,6 +47,8 @@ class MDL:
             'token': 'mytokenkey',
         }
         """
+        import urllib2
+
         if 'uri' not in server or 'token' not in server:
             return False
 
@@ -55,8 +57,6 @@ class MDL:
 
         url = '%s/webservice/%s/server.php' % (server['uri'], server['protocol'])
         data = 'wstoken=%s&wsfunction=%s' % (server['token'], function)
-
-        import urllib2
         
         request = urllib2.Request(url, data)
         f = urllib2.urlopen(request)
@@ -74,14 +74,14 @@ class MDL:
         if key_word is None:
             key_word = ""
         count = 0
-        for param in params:
-            if type(param) is dict:
-                for item in iter(param):
-                    function += '&%s[%s][%s]=' % (key_word, str(count), item)
-                    function += '%s' % param[item]
+        for key,value in params.items():
+            if type(value) is dict:
+                for item in iter(value):
+                    function += '&%s[%s][%s]=' % (key, str(count), item)
+                    function += '%s' % value[item]
             else:
-                function += '&%s[%s]=' % (key_word, str(count))
-                function += '%s' % param
+                function += '&%s=' % (key)
+                function += '%s' % value
             count += 1
         return self.conn_rest(server, function)
 
@@ -133,8 +133,8 @@ class MDL:
         def enrol_manual_enrol_users(params):
             return proxy.enrol_manual_enrol_users(params)
         
-        # def enrol_manual_unenrol_users(params):
-        #     return proxy.enrol_manual_unenrol_users(params)
+        def core_course_duplicate_course(params):
+            return proxy.core_course_duplicate_course(params)
         
         def not_implemented_yet(params):
             return False
@@ -143,12 +143,12 @@ class MDL:
         select_method = {
             "core_course_get_courses": core_course_get_courses,
             "core_course_create_courses": core_course_create_courses,
+            "core_course_duplicate_course": core_course_duplicate_course,
             "core_user_get_users": core_user_get_users,
             "core_user_create_users": core_user_create_users,
             "core_user_update_users": core_user_update_users,
             "core_user_delete_users": core_user_delete_users,
             "enrol_manual_enrol_users": enrol_manual_enrol_users,
-            # "enrol_manual_unenrol_users": enrol_manual_unenrol_users,
             "not_implemented_yet": not_implemented_yet,
         }
 
@@ -355,3 +355,40 @@ class MDL:
             "rest": self.rest_protocol,
         }
         return protocol[server['protocol']](server, params, function, key_word)
+
+    def duplicate_course(self, server, params):
+        """
+        This web service function will duplicate a course creating a new one.
+        It will perform a backup of an existing course and a restore to a new one
+
+
+        Input:
+            server = {
+                'protocol': 'xmlrpc|rest',
+                'uri': 'http://www.mymoodle.org',
+                'token': 'mytokenkey',
+            }
+            params = [{                    # Input a list of dictionaries
+                'courseid' - int The course id to duplicate
+                'fullname' - string The new course (duplicated) fullname
+                'shortname' - string The new course shortname
+                'categoryid - int The category id of the new course - Optional, default to Miscellaneous
+                'visible' - boolean default to 1
+            }]
+        Output:
+            xmlrpc protocol:    dictionary {'id:' int,'shortname': string} (broken)
+            rest protocol:      xml file format
+        """
+        # this method over xmlrpc is broken
+        server['protocol'] = 'rest'
+
+        if 'protocol' not in server:
+            return False
+        function = 'core_course_duplicate_course'
+        protocol = {
+            "xmlrpc": self.xmlrpc_protocol,
+            "rest": self.rest_protocol,
+        }
+        
+        return protocol[server['protocol']](server, params, function)
+        
