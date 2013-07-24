@@ -33,8 +33,8 @@ print mdl.conn_xmlrpc(server)
 Get user
 """
 
-user_ids = ((19,))
-print mdl.get_users(server, user_ids)
+criteria = [{'key':'username','value':'usuario'}]
+print mdl.get_users(server, criteria)
 
 # Enrol a user in a course
 enrols =[{
