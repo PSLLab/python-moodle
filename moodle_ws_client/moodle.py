@@ -55,10 +55,12 @@ class MDL:
         if server['uri'][-1] == '/':
             server['uri'] = server['uri'][:-1]
 
-        url = '%s/webservice/%s/server.php' % (server['uri'], server['protocol'])
+        url = '%s/webservice/%s/server.php' % (server['uri'], 'rest')
         data = 'wstoken=%s&wsfunction=%s' % (server['token'], function)
         
         request = urllib2.Request(url, data)
+        print url
+        print data
         f = urllib2.urlopen(request)
         result = f.read()
         f.close()
@@ -89,7 +91,7 @@ class MDL:
     def conn_xmlrpc(self, server, service=None, params=None):
         """
         Connection to Moodle with XML-RPC Webservice
-        server = {
+        server = {   
             'protocol': 'xmlrpc',
             'uri': 'http://www.mymoodle.org',
             'token': 'mytokenkey',
@@ -135,6 +137,9 @@ class MDL:
         
         def core_course_duplicate_course(params):
             return proxy.core_course_duplicate_course(params)
+
+        def core_enrol_get_enrolled_users(params):
+            return proxy.core_enrol_get_enrolled_users(params)
         
         def not_implemented_yet(params):
             return False
@@ -149,6 +154,7 @@ class MDL:
             "core_user_update_users": core_user_update_users,
             "core_user_delete_users": core_user_delete_users,
             "enrol_manual_enrol_users": enrol_manual_enrol_users,
+            "core_enrol_get_enrolled_users": core_enrol_get_enrolled_users,
             "not_implemented_yet": not_implemented_yet,
         }
 
@@ -380,7 +386,7 @@ class MDL:
             rest protocol:      xml file format
         """
         # this method over xmlrpc is broken
-        server['protocol'] = 'rest'
+        #server['protocol'] = 'rest'
 
         if 'protocol' not in server:
             return False
@@ -390,5 +396,18 @@ class MDL:
             "rest": self.rest_protocol,
         }
         
-        return protocol[server['protocol']](server, params, function)
+        return protocol['rest'](server, params, function)
+
+    def get_course_users(self,server,params):
+        """
+        """
+        if 'protocol' not in server:
+            return False
+        function = 'core_enrol_get_enrolled_users'
+        protocol = {
+            "xmlrpc": self.xmlrpc_protocol,
+            "rest": self.rest_protocol,
+        }
+        return protocol['rest'](server, params, function)
+        #return protocol[server['protocol']](server, params, function)
         
