@@ -59,8 +59,6 @@ class MDL:
         data = 'wstoken=%s&wsfunction=%s' % (server['token'], function)
         
         request = urllib2.Request(url, data)
-        print url
-        print data
         f = urllib2.urlopen(request)
         result = f.read()
         f.close()
@@ -140,6 +138,9 @@ class MDL:
 
         def core_enrol_get_enrolled_users(params):
             return proxy.core_enrol_get_enrolled_users(params)
+
+        def core_course_update_courses(params):
+            return proxy.core_course_update_courses(params)
         
         def not_implemented_yet(params):
             return False
@@ -155,6 +156,7 @@ class MDL:
             "core_user_delete_users": core_user_delete_users,
             "enrol_manual_enrol_users": enrol_manual_enrol_users,
             "core_enrol_get_enrolled_users": core_enrol_get_enrolled_users,
+            "core_course_update_courses": core_course_update_courses,
             "not_implemented_yet": not_implemented_yet,
         }
 
@@ -400,6 +402,7 @@ class MDL:
 
     def get_course_users(self,server,params):
         """
+            protocol XML-RPC is broken for this method
         """
         if 'protocol' not in server:
             return False
@@ -411,3 +414,14 @@ class MDL:
         return protocol['rest'](server, params, function)
         #return protocol[server['protocol']](server, params, function)
         
+    def update_course(self,server,params):
+        """
+        """
+        if 'protocol' not in server:
+            return False
+        function = 'core_course_update_courses'
+        protocol = {
+            "xmlrpc": self.xmlrpc_protocol,
+            "rest": self.rest_protocol,
+        }
+        return protocol[server['protocol']](server, params, function)

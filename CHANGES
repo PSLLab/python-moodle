@@ -20,3 +20,16 @@ Version 0.0.2
 -------------
 
 * Updated courses services to 2.5
+
+Version 0.0.3
+-------------
+
+* Added methods:
+    * duplicate_course(server,course)
+    * get_course_users(server,course)
+
+Version 0.0.4
+-------------
+
+*Added method:
+    * update_course(server,course)

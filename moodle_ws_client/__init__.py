@@ -5,6 +5,7 @@
 #    Copyright (c) 2011 Zikzakmedia S.L. (http://zikzakmedia.com) All Rights Reserved.
 #                       Raimon Esteve <resteve@zikzakmedia.com>
 #                       Jesus Martín <jmartin@zikzakmedia.com>
+#    Copyright (c) 2013 Francisco Moreno <packo@assamita.net>
 #    $Id$
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -25,6 +26,6 @@
 '''
 Moodle web service connection library
 '''
-__version__ = '0.0.2'
+__version__ = '0.0.4'
 
 from moodle_ws_client import *

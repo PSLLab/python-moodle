@@ -67,5 +67,8 @@ The implemented methods and APIs are:
     * delete_users(server, users)
     * get_users(server, user_ids)
     * enrol_users(server, enrols) (include unrol users)
+    * duplicate_course(server,course)
+    * get_course_users(server,course)
+    * update_course(server,course)
  
 For more examples, see examples dir

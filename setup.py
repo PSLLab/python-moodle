@@ -1,5 +1,8 @@
 #!/usr/bin/env python
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
+# Copyright (C) 2013 by
+#   Francisco Moreno Llorca <packo@assamita.net>
+#
 from setuptools import setup
 
 import os
