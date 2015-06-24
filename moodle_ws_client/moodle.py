@@ -24,7 +24,7 @@
 ##############################################################################
 
 class MDL:
-    """ 
+    """
     Main class to connect Moodle webservice
     More information about Webservice:
         http://docs.moodle.org/dev/Web_Services_API
@@ -57,7 +57,7 @@ class MDL:
 
         url = '%s/webservice/%s/server.php' % (server['uri'], 'rest')
         data = 'wstoken=%s&wsfunction=%s' % (server['token'], function)
-        
+
         request = urllib2.Request(url, data)
         f = urllib2.urlopen(request)
         result = f.read()
@@ -74,6 +74,7 @@ class MDL:
         if key_word is None:
             key_word = ""
         count = 0
+
         for key,value in params.items():
             if type(value) is dict:
                 for item in iter(value):
@@ -89,7 +90,7 @@ class MDL:
     def conn_xmlrpc(self, server, service=None, params=None):
         """
         Connection to Moodle with XML-RPC Webservice
-        server = {   
+        server = {
             'protocol': 'xmlrpc',
             'uri': 'http://www.mymoodle.org',
             'token': 'mytokenkey',
@@ -112,27 +113,30 @@ class MDL:
         Select the correct function to call
         """
 
+        def core_cohort_create_cohorts(params):
+            return proxy.core_cohort_create_cohorts(params)
+
         def core_course_get_courses(params):
             return proxy.core_course_get_courses()
 
         def core_course_create_courses(params):
             return proxy.core_course_create_courses(params)
-        
+
         def core_user_get_users(params):
             return proxy.core_user_get_users(params)
-        
+
         def core_user_create_users(params):
             return proxy.core_user_create_users(params)
-        
+
         def core_user_update_users(params):
             return proxy.core_user_update_users(params)
-        
+
         def core_user_delete_users(params):
             return proxy.core_user_delete_users(params)
-        
+
         def enrol_manual_enrol_users(params):
             return proxy.enrol_manual_enrol_users(params)
-        
+
         def core_course_duplicate_course(params):
             return proxy.core_course_duplicate_course(params)
 
@@ -141,7 +145,7 @@ class MDL:
 
         def core_course_update_courses(params):
             return proxy.core_course_update_courses(params)
-        
+
         def not_implemented_yet(params):
             return False
 
@@ -157,12 +161,13 @@ class MDL:
             "enrol_manual_enrol_users": enrol_manual_enrol_users,
             "core_enrol_get_enrolled_users": core_enrol_get_enrolled_users,
             "core_course_update_courses": core_course_update_courses,
+            "core_cohort_create_cohorts": core_cohort_create_cohorts,
             "not_implemented_yet": not_implemented_yet,
         }
 
         if function is None or function not in select_method:
             function = "not_implemented_yet"
-        
+
         return select_method[function](params)
 
 
@@ -222,7 +227,7 @@ class MDL:
 
     def get_users(self, server, params):
         """
-        Get users 
+        Get users
         Input:
             server = {
                 'protocol': 'xmlrpc|rest',
@@ -236,7 +241,7 @@ class MDL:
         Output:
             xmlrpc protocol:    list of dictionaries
             rest protocol:      xml file format
-        params example:   # criteria = [{'key':'username','value':'api_user'}] 
+        params example:   # criteria = [{'key':'username','value':'api_user'}]
                           # mdl.get_users(server,criteria)
         """
         if 'protocol' not in server:
@@ -397,7 +402,7 @@ class MDL:
             "xmlrpc": self.xmlrpc_protocol,
             "rest": self.rest_protocol,
         }
-        
+
         return protocol['rest'](server, params, function)
 
     def get_course_users(self,server,params):
@@ -413,7 +418,7 @@ class MDL:
         }
         return protocol['rest'](server, params, function)
         #return protocol[server['protocol']](server, params, function)
-        
+
     def update_course(self,server,params):
         """
         """
@@ -425,3 +430,34 @@ class MDL:
             "rest": self.rest_protocol,
         }
         return protocol[server['protocol']](server, params, function)
+
+    def create_cohorts(self, server, params):
+        """
+        Create new user
+        Input:
+            server = {
+                'protocol': 'xmlrpc|rest',
+                'uri': 'http://www.mymoodle.org',
+                'token': 'mytokenkey',
+            }
+            params = [{                      # Input a list of dictionaries
+                'categorytype': categorytype,        # Required & unique
+                'name': name,
+                'idnumber': idnumber,
+                'description': description,
+                'descriptionformat': descriptionformat,
+                'visible': visible,
+            }]
+        Output:
+            xmlrpc protocol:    list of dictionaries
+            rest protocol:      xml file format
+        """
+        if 'protocol' not in server:
+            return False
+        function = 'core_cohort_create_cohorts'
+        key_word = 'cohorts'
+        protocol = {
+            "xmlrpc": self.xmlrpc_protocol,
+            "rest": self.rest_protocol,
+        }
+        return protocol[server['protocol']](server, params, function, key_word)
