@@ -5,7 +5,6 @@
 #    Copyright (c) 2011 Zikzakmedia S.L. (http://zikzakmedia.com) All Rights Reserved.
 #                       Raimon Esteve <resteve@zikzakmedia.com>
 #                       Jesus Martín <jmartin@zikzakmedia.com>
-#    Copyright (c) 2013 Francisco Moreno <packo@assamita.net>
 #    $Id$
 #
 #    This program is free software: you can redistribute it and/or modify
@@ -23,9 +22,32 @@
 #
 ##############################################################################
 
-'''
-Moodle web service connection library
-'''
-__version__ = '0.0.5'
+from config import *
+from moodle_ws_client import moodle
 
-from moodle_ws_client import *
+mdl = moodle.MDL()
+# xmlrpc Connection
+print mdl.conn_xmlrpc(server)
+
+"""
+Create new cohorts
+
+cohorts[0][categorytype][type]= string
+cohorts[0][categorytype][value]= string
+cohorts[0][name]= string
+cohorts[0][idnumber]= string
+cohorts[0][description]= string
+cohorts[0][descriptionformat]= int
+cohorts[0][visible]= int
+
+"""
+cohorts = [{
+    'name': 'test1', # shortname must be unique
+    'idnumber': 'co1',
+    'description': 'Test 1',
+    'descriptionformat': 2,
+    'categorytype': { 'type': 'system', 'value': '' },
+    'visible': 1
+}]
+
+print mdl.create_cohorts(server, cohorts)

@@ -6,8 +6,8 @@ Installation
 --------------------------------------------------------------------------------
 Installing Moodle Webservice is fairly easy. You can...
 
-    sudo python setup.py install  
-    
+    sudo python setup.py install
+
 Setting up Moodle 2.2.x web services
 --------------------------------------------------------------------------------
 Follow the steps in /admin/settings.php?section=webservicesoverview of your moodle.
@@ -67,8 +67,9 @@ The implemented methods and APIs are:
     * delete_users(server, users)
     * get_users(server, user_ids)
     * enrol_users(server, enrols) (include unrol users)
+    * create_cohorts(server, cohorts)
     * duplicate_course(server,course)
     * get_course_users(server,course)
     * update_course(server,course)
- 
+
 For more examples, see examples dir
